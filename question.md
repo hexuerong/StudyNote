@@ -28,7 +28,7 @@
     - DNS是一个**网络服务器**。域名解析其实就是在DNS上记录一条信息记录。DNS协议提供通过域名查IP地址或从IP地址反查域名的服务。
 3. TCP三次握手
     TCP三次握手用以同步客户端和服务端的序列号和确认号，并交换TCP窗口大小信息。
-    ![avatar](/StudyNote/images/question/TCP3.jpg)
+    ![avatar](./images/question/TCP3.jpg)
     三次握手过程如下：
     - 客户端发送一个带 SYN=1，Seq=X 的数据包到服务器端口。（第一次握手，由浏览器发起，告诉服务器我要发送请求了）
     - 服务器发回一个带 SYN=1， ACK=X+1， Seq=Y 的响应包以示传达确认信息。（第二次握手，由服务器发起，告诉浏览器我准备接受了，你赶紧发送吧）
@@ -38,7 +38,7 @@
 4. 发送HTTP请求
     **TCP 三次握手结束后，浏览器开始发送 HTTP 请求报文。**
     请求报文由请求行（request line）、请求头（header）、请求体三个部分组成,如下图所示：
-    ![avatar](/StudyNote/images/question/TCP_request.jpg)
+    ![avatar](./images/question/TCP_request.jpg)
     - 请求行：包含**请求方法、URL、协议版本**。
         例：`POST  /chapter17/user.html HTTP/1.1`
         - 请求方法包含8种：get、post、put、delete、patch、head、options、trace。
@@ -53,16 +53,16 @@
     - 服务器
     服务器是网络环境中的高性能计算机，它**侦听网络上的其他计算机（客户机）提交的服务请求，并提供相应的服务**，比如网页服务、文件下载服务、邮件服务、视频服务。而客户端主要的功能是浏览网页、看视频、听音乐等等。 每台服务器上都会安装**处理请求的应用——web server**。常见的 web server 产品有 apache、nginx、IIS 或 Lighttpd 等。
     **web server 担任管控的角色**，对于不同用户发送的请求，会结合配置文件，把不同请求委托给服务器上处理相应请求的程序进行处理（例如 CGI 脚本，JSP 脚本，servlets，ASP 脚本，服务器端 JavaScript，或者一些其它的服务器端技术等），然后返回后台程序处理产生的结果作为响应。以下是服务端与客户端的区别：
-    ![avatar](/StudyNote/images/question/server_client.jpg)
+    ![avatar](./images/question/server_client.jpg)
     - MVC后台处理阶段
     **MVC 是一个设计模式**，将应用程序分成三个核心部件：模型（model）-- 视图（view）--控制器（controller），它们各自处理自己的任务，实现输入、处理和输出的分离。以下是MVC架构图：
-    ![avatar](/StudyNote/images/question/MVC.png)
+    ![avatar](./images/question/MVC.png)
         - 视图（view）：提供给用户的操作界面，是程序的外壳。
         - 模型（model）：**主要负责数据交互**。在 MVC 的三个部件中，模型拥有最多的处理任务。一个模型能为多个视图提供数据。
         - 控制器（controller）：**根据用户从"视图层"输入的指令，选取"模型层"中的数据，然后对其进行相应的操作，产生最终结果。** 首先浏览器发送过来的请求先经过控制器，控制器进行逻辑处理和请求分发，接着会调用模型，这一阶段模型会获取 redis db 以及 MySQL 的数据，获取数据后将渲染好的页面，响应信息会以响应报文的形式返回给客户端，最后浏览器通过渲染引擎将网页呈现在用户面前。
     - http响应报文
     响应报文由响应行（request line）、响应头部（header）、响应主体三个部分组成。如下图所示：
-    ![avatar](/StudyNote/images/question/response.jpg)
+    ![avatar](./images/question/response.jpg)
         - 响应行：包含**协议版本，状态码，状态码描述**。
         状态码规则如下：
         1xx：指示信息--表示请求已接收，继续处理。
@@ -74,7 +74,7 @@
         - 响应主体：包含**回车符、换行符和响应返回数据**。（并不是所有响应报文都有响应数据）
 6. 浏览器解析渲染页面
     浏览器拿到响应文本 HTML 后开始渲染页面，接下来介绍下浏览器渲染机制：
-    ![avatar](/StudyNote/images/question/render.jpg)
+    ![avatar](./images/question/render.jpg)
     浏览器解析渲染页面分为以下五个步骤：
     - **解析html生成DOM树**：根据html的内容，将标签按照结构解析为DOM树，此过程是一个深度优先遍历，即先构建当前节点的所有子节点再构建兄弟节点。在构建过程中，若遇到script标签,则DOM树暂停构建直至js脚本执行完毕。
     - **解析css生成CSS规则树**：解析CSS规则树的时候会暂停执行脚本，直至CSS规则树就绪。浏览器在CSS规则树生成之前不会进行渲染。
@@ -88,7 +88,7 @@
         - 回流：某个元素的尺寸发生了变化，则需重新计算渲染树，重新渲染。
 7. 断开连接
     当数据传送完毕，需要断开 tcp 连接，此时发起 tcp 四次挥手。
-    ![avatar](/StudyNote/images/question/TCP4.jpg)
+    ![avatar](./images/question/TCP4.jpg)
     四次握手过程如下：
     - 发起方向被动方发送报文，Fin、Ack、Seq，表示已经没有数据传输了。并进入 FIN_WAIT_1 状态。(第一次挥手：由浏览器发起的，发送给服务器，我请求报文发送完了，你准备关闭吧)
     - 被动方发送报文，Ack、Seq，表示同意关闭请求。此时主机发起方进入 FIN_WAIT_2 状态。(第二次挥手：由服务器发起的，告诉浏览器，我请求报文接受完了，我准备关闭了，你也准备吧)
@@ -101,4 +101,4 @@
 2. UDP：面向非连接。（即正式通信前不需要与对方建立连接，不管对方状态就直接发送。比如发短信）
 
 TCP协议和UDP协议各有所长、各有所短，适用于不同要求的通信环境。TCP和UDP之间的差别如图所示：
-![avatar](/StudyNote/images/question/TCP_UDP.jpg)
+![avatar](./images/question/TCP_UDP.jpg)
