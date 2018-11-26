@@ -2,7 +2,7 @@
 
 ## 从url输入到页面展现的具体过程
 
-![avatar](/StudyNote/images/question/url_request.jpg)
+![avatar](./images/question/url_request.jpg)
 **总体来说分为以下几个过程：**
 
 - DNS解析：用户在浏览器输入地址，DNS将域名解析成IP地址并返回给浏览器
