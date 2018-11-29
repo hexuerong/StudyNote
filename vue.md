@@ -102,3 +102,12 @@ history模式：history采用HTML5的新特性；且提供了两个新方法： 
 
 `$route`是“路由信息对象”，包括path，params，hash，query，fullPath，matched，name等路由信息参数。
 `$router`是“路由实例”对象,包括了路由的跳转方法，钩子函数等。
+
+## vue-resource与axios
+
+vue-resource已经停止维护了，vue2.0的版本推荐使用axios。
+
+## uni-app
+
+uni-app 是一个使用 Vue.js 开发跨平台应用的前端框架，开发者编写一套代码，可编译到iOS、Android、H5、小程序等多个平台。
+具体介绍几使用方式查看[uni-app 官网](https://uniapp.dcloud.io/)
