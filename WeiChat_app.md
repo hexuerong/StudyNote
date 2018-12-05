@@ -20,3 +20,14 @@
   - 可以通过调用`wx.startPullDownRefresh`触发下拉刷新，效果与用户手动下拉刷新一致。
   - 当处理完数据刷新后，`wx.stopPullDownRefresh`可以停止当前页面的下拉刷新。
 - onReachBottom：监听用户上拉触底事件。
+
+## 基础样式库-weui
+
+WeUI 是一套与微信原生 UI 一致的 UI 库，核心文件是 weui.css，只需要获取到该文件，然后在页面中引入，即可使用 WeUI 的组件。
+
+界面效果展示地址：[https://weui.io/](https://weui.io/)
+github代码地址：[https://github.com/tencent/weui](https://github.com/tencent/weui)
+代码文档地址：[https://github.com/tencent/weui/wiki0](https://github.com/tencent/weui/wiki)
+
+weui-wxss地址：[https://github.com/hexuerong/weui-wxss](https://github.com/hexuerong/weui-wxss)
+在此目录的wxss`weui-wxss/dist/style/weui.wxss`
