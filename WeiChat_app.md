@@ -31,3 +31,7 @@ github代码地址：[https://github.com/tencent/weui](https://github.com/tencen
 
 weui-wxss地址：[https://github.com/hexuerong/weui-wxss](https://github.com/hexuerong/weui-wxss)
 在此目录的wxss`weui-wxss/dist/style/weui.wxss`
+
+## 小程序MVVM框架 WePY
+
+文档地址：[https://tencent.github.io/wepy/](https://tencent.github.io/wepy/)
