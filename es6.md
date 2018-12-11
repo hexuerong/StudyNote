@@ -218,19 +218,260 @@ console.log(tpl2);
 // </div>
 ```
 
-## 新的数据类型 —— Symbol
+## 新的数据类型 —— Symbol (平时使用率一般)
 
-原来的基本数据类型：Number、String、Bool、Object、null、undefined。（Array属于Object）
+原来的基本数据类型：Number、String、Boolean、Object、null、undefined。（Array、Function属于Object）
+
+``` js
+//需要注意的是typeof null返回为object,因为特殊值null是一个空的对象引用（空对象指针）。
+console.log(typeof null);//object
+```
 
 现在要再新加一种数据类型Symbol。**Symbol每次创建的时候值都不一样。**
 
+注意：
+
+1. Symbol不能new。
+2. Symbol返回的是一个唯一的值。（主要做一个key，定义唯一的或者是私有的东西）
+3. Symbol是一个单独的数据类型。就叫symbol，基本数据类型。
+4. Symbol如果作为对象的key，用for in循环无法遍历出来。
+
 ``` js
 let a = Symbol();
-//Symbol里面可以加一个字符串用来描述这个symbol，不影响值。例：let a = Symbol('this a symbol');
+//Symbol函数可以接受一个字符串作为参数，表示对 Symbol 实例的描述(不影响值)，主要是为了在控制台显示，或者转为字符串时，比较容易区分。例：let a = Symbol('symbol1');
 let b = Symbol();
 console.log(a === b);//false
 ```
 
-**Symbol的最大用处：作为一个对象的属性名称，防止对象的属性名被重写。**
-稍等
-还需要重新理解
+**Symbol 值不能与其他类型的值（包括字符串）进行运算**，会报错。但是，Symbol 值可以显式转为字符串。也可以转为布尔值，但是不能转为数值。
+
+``` js
+//转为字符串
+let sym = Symbol('My symbol');
+console.log( String(sym) ); // 'Symbol(My symbol)'
+console.log( sym.toString() ); // 'Symbol(My symbol)'
+
+//转为bool值
+Boolean(sym);
+console.log( Boolean(sym) ); // true
+console.log( !sym );  // false
+if (sym) {
+  // ...
+}
+
+Number(sym) // TypeError
+sym + 2 // TypeError
+```
+
+Symbol的最大用处：**作为一个对象的属性名称，防止对象的属性名被重写。**
+
+理解：下面这个还是被修改了。
+
+``` js
+let obj = {};
+let name = Symbol();
+obj[name] = 'Lili';
+console.log(obj);//{Symbol(): "Lili"}
+obj[name] = 'Bob';
+console.log(obj);//{Symbol(): "Bob"}
+```
+
+这个示例就未被修改
+
+``` js
+let person = {};
+let name = Symbol('symbol1');
+
+{
+    person[name] = 'Lili';
+    console.log(person[name]);//Lili
+    console.log(person);//{Symbol(symbol1): "Lili"}
+}
+
+{
+    let name = Symbol('symbol2');
+    person[name] = 'Bob';
+    console.log(person[name]);//Bob
+    console.log(person);//{Symbol(symbol1): "Lili", Symbol(symbol2): "Bob"}
+}
+
+console.log(person[name]);//Lili
+console.log(person);//{Symbol(symbol1): "Lili", Symbol(symbol2): "Bob"}
+```
+
+## Proxy
+
+Proxy是代理的意思。在目标对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写。
+Proxy主要用于**扩展（增强）对象的一些功能。**
+
+Proxy的作用：比如Vue中的拦截，
+            预警、上报、扩展功能、统计、增强对象等等。
+
+Proxy**其实是设计模式的一种，代理模式。**
+
+``` js
+var proxy = new Proxy(target, handler);
+// new Proxy(被代理的对象, 对代理的对象做什么操作);
+// handler是一个对象，里面都是函数
+/* {
+    get(){},//获取时要做的事情
+    set(){},//设置时要做的事情
+    deleteProxy(){},//删除
+    has(){},//是否有 'xxx' in obj
+    apply(){},//调用函数处理
+    ...
+} */
+```
+
+Proxy 对象的所有用法，都是上面这种形式，不同的只是handler参数的写法。其中，new Proxy()表示生成一个Proxy实例，target参数表示所要拦截的目标对象，handler参数也是一个对象，用来定制拦截行为。
+
+``` js
+let user = new Proxy({}, {
+    get: function (target, property) {
+        if (property == 'full_name') {
+            return target.first_name + ' ' + target.last_name;
+        }
+    }
+});
+user.first_name = 'Bob';
+user.last_name = 'Wood';
+console.log(user.full_name);
+```
+
+例：实现访问一个对象中不存在的属性时，不返回undefined，而是报错。
+
+``` js
+let user = {
+    name: 'Lili',
+    age: 18
+};
+let obj = new Proxy(user, {
+    get (target, property) {
+        if (property in target) {
+            return target[property];
+        }else{
+            throw ReferenceError(`${property} is not in this object`);
+        }
+    }
+});
+console.log(obj.name);//'Lili'
+console.log(obj.age);//18
+console.log(obj.sex);//报错
+```
+
+例：实现一个DOM对象，通过DOM.div()、DOM.a()、DOM.ul()等方法创建DOM的element且可以传参添加属性和子element。
+
+``` js
+const DOM = new Proxy({}, {
+    get (target, property) {
+        return function (attrs, ...children) {
+            // 创建一个DOM节点
+            let el = document.createElement(property);
+            // 添加DOM标签的属性
+            for (const key of Object.keys(attrs)) {
+                el.setAttribute(key, attrs[key]);
+            }
+            // 添加子节点
+            children.forEach(child => {
+                if(typeof child == 'string'){
+                    el.innerHTML += child;
+                }else{
+                    el.appendChild(child);
+                }
+            });
+            return el;
+        };
+    }
+});
+let elDom = DOM.div({id:'myDiv',class:'testDiv'},
+    '嘿嘿嘿',
+    DOM.p({id:'myP',class:'testP'},
+        '这个一个p标签形成的段落。',
+        DOM.span({class:'testSpan'},
+            '这是span。'
+        )
+    ),
+    '好好好',
+    DOM.ul({},
+        DOM.li({},'这是一个li'),
+        DOM.li({},'这是一个li'),
+        DOM.li({},'这是一个li'),
+        DOM.li({},'这是一个li')
+    )
+);
+console.log(elDom);
+window.onload = function () {
+    document.body.append(elDom);
+}
+```
+
+## Set
+
+Set是一种新的数据结构。它类似于数组，但是**成员的值都是唯一的，没有重复的值。**
+Set是一个构造函数，初始化时里面可以传一个数组。（只能是数组）
+
+``` js
+let arr = [1,2,3,3];
+console.log(arr);//[1,2,3,3]
+let set = new Set([1,2,3,3]);
+console.log(set);//{1,2,3}
+```
+
+``` js
+//Set的属性和方法
+let set = new Set();
+set.add('a');//添加
+set.add('b').add('c');//由于Set的方法调用后返回新的set，故可以进行链式调用
+console.log(set.size);//3 属性：获取set的大小（长度）
+console.log(set.has('d'));//false 判断是否有某个值
+console.log(set.has('b'));//true
+set.delete('a');//删除
+set.clear();//清除set中的全部值
+```
+
+``` js
+//Set的循环遍历
+let set = new Set(['a','b','c']);
+
+for (const item of set) {//默认是取的values
+    console.log(item);//a //b //c
+}
+
+for (const item1 of set.keys()) {
+    console.log(item1);//a //b //c
+}
+
+for (const item2 of set.values()) {
+    console.log(item2);//a //b //c
+}
+
+for (const item3 of set.entries()) {
+    console.log(item3);//["a":"a"] //["b":"b"] //["c":"c"]
+}
+
+for (const [key,value] of set.entries()) {
+    console.log(key,value);//a a    //b b    //c c
+}
+
+set.forEach(value => {
+    console.log(value);//a //b //c
+});
+```
+
+总结：**Set数据结构的key和value值一样。**
+
+例：Set转换为数组
+
+``` js
+let set = new Set([1,2,3,4]);
+let arr = [...set];
+console.log(arr);//[1, 2, 3, 4]
+```
+
+例：数组去重
+
+``` js
+let arr = [1,2,3,4,5,4,3,2,1,3,3,4,2];
+let newArr = [...new Set(arr)];
+console.log(newArr);//[1, 2, 3, 4, 5]
+```
