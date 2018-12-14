@@ -10,8 +10,15 @@
     
 </body>
 <script type="module">
-import {a} from './test.js'
+import mode,{show, sum, a, b} from './test.js'
 
-console.log(a);
+let p1 = new mode.Person();
+console.log(p1.showName());
+
+show();
+
+sum();
+
+console.log(a,b);
 </script>
 </html>
