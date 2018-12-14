@@ -713,6 +713,8 @@ new Promise(getToken)
 
 ## 模块化
 
+AMD、CMD、CommonJS、ES6模块化
+
 ## 类(class) 与 继承(extends)
 
 ## 新的数据类型 —— Symbol (平时使用率一般)

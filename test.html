@@ -9,19 +9,9 @@
 <body>
     
 </body>
-<script>
-let arr = ['aaa','bbb','ccc'];
+<script type="module">
+import {a} from './test.js'
 
-let a = Promise.resolve('aaa');
-let b = Promise.resolve('bbb');
-let c = Promise.reject('ccc');
-
-Promise.all([a,b,c]).then(res => {
-    console.log(res);
-});
-
-Promise.race(arr).then(res => {
-    console.log(res);
-});
+console.log(a);
 </script>
 </html>
