@@ -8,9 +8,10 @@ const server = http.createServer((request,response) => {
     let pathname = url.parse(request.url).pathname;
     //application/x-javascript
     // 输出请求的文件名
-    console.log("Request for " + pathname + " received.");
+    // console.log("Request for " + pathname + " received.");
     
     // 从文件系统中读取请求的文件内容
+    if(pathname == '/') pathname += 'test.html';
     fs.readFile(pathname.substr(1), function (err, data) {
         if (err) {
             console.log(err);
@@ -35,5 +36,5 @@ const server = http.createServer((request,response) => {
 });
 
 server.listen(8088,'localhost',200,res => {
-    console.log('HTTPS Server is running on: http://localhost:%s', 8088);
+    console.log('HTTP Server is running on: http://localhost:%s', 8088);
 });

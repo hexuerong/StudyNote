@@ -709,11 +709,105 @@ new Promise(getToken)
     参数与`Promise.all()`的一样。
     新实例的状态与参数中最先返回状态的实例保持一致。
 
+## generator函数
+
+生成器。执行 Generator 函数会返回一个遍历器对象。可以把 Generator 理解为一个状态机，封装了多个内部状态。
+
+用来解决异步，深度嵌套的问题。
+
+- generator函数的特征：
+  - function和函数名之间有`*`号。
+  - 函数体里面有`yield`表达式。
+- generator函数的声明：
+    ``` js
+    function * show(){
+    //function *show(){//效果一样(`*`不管左右是否有空格都一样，不影响定义)
+    //function* show(){//效果一样
+        yield 'welcome';
+        yield 'to';
+        return 'ending';
+    }
+    //该函数有三个状态：welcome，to 和 return 语句（结束执行）。
+    ```
+- generator函数的使用：
+    调用 Generator 函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象。下一步，必须调用遍历器对象的next方法，使得指针移向下一个状态。
+    ``` js
+    let g = show();
+    console.log(g);//输出generator对象
+    console.log(g.next());//{value: "welcome", done: false}
+    console.log(g.next());//{value: "to", done: false}
+    console.log(g.next());//{value: "ending", done: true}
+    console.log(g.next());//{value: undefined, done: true}
+    //输出值中：
+    //value属性就是当前yield的值。
+    //done属性的值表示遍历是否结束，true表示结束。
+    ```
+    每次调用next方法，内部指针就从函数头部或上一次停下来的地方开始执行，直到遇到下一个yield表达式（或return语句）为止。换言之，**Generator 函数是分段执行的，yield表达式是暂停执行的标记，而next方法可以恢复执行**。
+- next 方法的参数
+    yield表达式本身没有返回值，或者说总是返回undefined。**next方法可以带一个参数，该参数就会被当作上一个yield表达式的返回值。**
+    ``` js
+    function * show(){
+        let userName = yield `lili`;
+        let data = yield `我的名字是${userName}`;
+    }
+    let g = show();
+    console.log(g.next());//{value: "lili", done: false}
+    console.log(g.next('hh'));//{value: "我的名字是hh", done: false}
+    ```
+    如果想要第一次调用next方法时，就能够输入值，可以在 Generator 函数外面再包一层。
+- yield注意：
+  - yield表达式只能用在 Generator 函数里面，用在其他地方都会报错。
+  - yield表达式用作函数参数或放在赋值表达式的右边，可以不加括号。
+  - yield表达式如果用在另一个表达式之中，必须放在圆括号里面。
+    ``` js
+    function* demo() {
+    console.log('Hello' + yield); // SyntaxError
+    console.log('Hello' + yield 123); // SyntaxError
+
+    console.log('Hello' + (yield)); // OK
+    console.log('Hello' + (yield 123)); // OK
+    }
+    ```
+- generator函数返回值的遍历
+    手动用next方法调用比较麻烦。for ... in ...无法调用。
+  - for ... of ...遍历
+    ``` js
+    for(let p of g){
+        console.log(p);//依次输出 welcome to
+    }
+    //注意：return的东西不会遍历
+    ```
+  - 解构赋值
+    ``` js
+    let [a,...b] = g;
+    console.log(a);//welcome
+    console.log(b);//["to"]
+    //注意：只解构yield的值
+    ```
+  - 扩展运算符
+    ``` js
+    console.log(...g);//welcome to
+    ```
+  - Array.from()
+    ``` js
+    console.log(Array.from(g));//["welcome", "to"]
+    ```
+- 同步与异步
+  同步：连续执行，上一个操作没有完成，下一个操作不能进行。
+  异步：不连续，上一个操作没有完成，下一个操作可以执行。
+  异步解决方案：
+  - 回调函数。（callback）
+  - 事件监听。（addEventListener）
+  - 发布/订阅 模式。（emit 与 on）
+  - Promise对象。
+  - async。（ES2017规定的）
+
 ## async 与 await
 
 ## 模块化
 
-AMD、CMD、CommonJS、ES6模块化
+AMD、CMD、CommonJS、ES6模块化。
+最早是由社区提出的CommonJS规范。
 
 ## 类(class) 与 继承(extends)
 

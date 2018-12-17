@@ -9,7 +9,7 @@
 <body>
     
 </body>
-<script type="module">
+<!-- <script type="module">
 import mode,{show, sum, a, b} from './test.js'
 
 let p1 = new mode.Person();
@@ -20,5 +20,14 @@ show();
 sum();
 
 console.log(a,b);
+</script> -->
+<script>
+function * show(){
+    let userName = yield `lili`;
+    let data = yield `我的名字是${userName}`;
+}
+let g = show();
+console.log(g.next());//{value: "lili", done: false}
+console.log(g.next('hh'));//{value: "我的名字是hh", done: false}
 </script>
 </html>
